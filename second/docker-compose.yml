@@ -1,0 +1,39 @@
+version: "2"
+
+services:
+  jenkins-server:
+    image: jenkins/jenkins
+    container_name: jenkins-server
+    ports:
+      - "8080:8080"
+    networks:
+      cicd:
+
+  docker-server:
+    image: acoursove2/ubuntu:2.0
+    container_name: docker-server
+    privileged: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+    command: >
+      sh -c "
+             /usr/sbin/sshd -D &&
+             sudo daemonize /usr/bin/unshare --fork --pid --mount-proc /lib/systemd/systemd --system-unit=basic.target &&
+             exec sudo nsenter -t $(pidof systemd) -a su - $LOGNAME
+      "
+    environment:
+      - container=docker
+    # 공개 포트 지정
+    ports:
+      - "10022:22"
+      - "8081:8080"
+    # 컨테이너 내부에만 공개하는 공개 포트 지정
+    # expose:
+    #   - "10022"
+    networks:
+      cicd:
+
+networks:
+  cicd:
+    external: true
+    name: cicd
