@@ -6,10 +6,6 @@ RUN mkdir /var/run/sshd
 #set password
 RUN echo 'root:root' |chpasswd
 
-#replace sshd_config
-RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
-
 #make .ssh
 RUN mkdir /root/.ssh
 
@@ -18,4 +14,4 @@ RUN apt-get clean && \
 
 EXPOSE 22
 
-CMD ["/usr/sbin/sshd", "-D"]
+CMD ["/sbin/init"]

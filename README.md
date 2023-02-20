@@ -49,3 +49,14 @@ jekins
 우분투 PORT 8081:8080, 10022:22
 
 우분투안에는 도커가 또 존재하기때문에(Docker in Docker) 젠킨스에서 패키징한 파일을 우분투에 SSH 접속을 통해 전달하게 되면 우분투에서 WAR를 외장 톰캣으로 배포하게됨 이때 톰캣을 8080이고 호스트 PC는 8081에서 포워딩 되기때문에 8081로 접속하면 확인이 가능하다.
+
+<!-- docker exec -itu 0 docker-server /bin/bash  -->
+<!-- -u 0 이 루트 권한으로 접속하는 명령어 -->
+<!-- 원격 접속하기 위한 툴 -->
+<!-- apt-get install net-tools vim openssh-server -->
+<!-- vim /etc/ssh/sshd_config 에서 PermitRootLogin Yes로 설정-->
+<!-- service ssh start -->
+<!-- systemctl status sshd active인지 확인 -->
+
+<!-- WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED 오류시 -->
+<!-- 기존에 해당 포트로 접속한 ssh 동일 서버가 있어서 해당인증으로 접속하려다가 에러가 발생하는것 인증 정보 삭제후 재 로그인 필요 -->

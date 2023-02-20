@@ -10,19 +10,9 @@ services:
       cicd:
 
   docker-server:
-    image: acoursove2/ubuntu:2.0
+    image: acoursove2/ubuntu:3.0
     container_name: docker-server
     privileged: true
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup
-    command: >
-      sh -c "
-             /usr/sbin/sshd -D &&
-             sudo daemonize /usr/bin/unshare --fork --pid --mount-proc /lib/systemd/systemd --system-unit=basic.target &&
-             exec sudo nsenter -t $(pidof systemd) -a su - $LOGNAME
-      "
-    environment:
-      - container=docker
     # 공개 포트 지정
     ports:
       - "10022:22"
