@@ -23,6 +23,16 @@ services:
     networks:
       cicd:
 
+  anisible-server:
+    image: acoursove2/ansible:1.0
+    container_name: anisible-server
+    privileged: true
+    ports:
+      - "20022:22"
+      - "8082:8080"
+    networks:
+      cicd:
+
 networks:
   cicd:
     external: true

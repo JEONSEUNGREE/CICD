@@ -50,6 +50,13 @@ jekins
 
 우분투안에는 도커가 또 존재하기때문에(Docker in Docker) 젠킨스에서 패키징한 파일을 우분투에 SSH 접속을 통해 전달하게 되면 우분투에서 WAR를 외장 톰캣으로 배포하게됨 이때 톰캣을 8080이고 호스트 PC는 8081에서 포워딩 되기때문에 8081로 접속하면 확인이 가능하다.
 
+리눅스의 경우 빌드가 패키징, 전송, 도커 띄우기에 성공해도
+한참 머물다가 타임아웃이 떨어지는데 아래와같은 에러문구가 발생한다.
+Build step 'Send build artifacts over SSH' changed build result to UNSTABLE
+이는 출력스트림이 문제로 뒤에 아래와 같이 붙여주면 된다.
+
+> /dev/null 2>&1 &
+
 <!-- docker exec -itu 0 docker-server /bin/bash  -->
 <!-- -u 0 이 루트 권한으로 접속하는 명령어 -->
 <!-- 원격 접속하기 위한 툴 -->
@@ -60,3 +67,12 @@ jekins
 
 <!-- WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED 오류시 -->
 <!-- 기존에 해당 포트로 접속한 ssh 동일 서버가 있어서 해당인증으로 접속하려다가 에러가 발생하는것 인증 정보 삭제후 재 로그인 필요 -->
+
+ANSIBLE
+
+1. 기존 리눅스 이미지를 컨테이너 변경하여 띠우고 commit 해서 ansible-server로 생성 push
+2. ssh-key-gen 후 자기자신의 서버와 docker-server에 ssh-copy-id 한다. (로그인을 생략하기위함)
+3. ANSILBE 모듈은 멱등성을 사용함 (여러번 실행해도 한번 실행한 것과 같은 결과가 나옴) 여러번 카피하여도 한번 카피한것으로 간주함과 같은 개념
+4. ansible all -m ping - all은 지정한 그룹을 의미 -m 모듈 ping은 모듈의 종류를 의미 ansible document에서 모듈 정의 확인 가능
+   예시) ansible all -m shell -a "free -h"
+   각서버에 shell 명령어 전달하여 메모리 정보 확인
