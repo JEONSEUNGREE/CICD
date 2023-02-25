@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # deployment 이름
+  name: cicd-deployment
+  # 레플리카 수, 스펙
+spec:
+  selector:
+    matchLabels:
+      app: cicd-devops-project
+  replicas: 2
+
+  template:
+    metadata:
+      labels:
+        app: cicd-devops-project
+    spec:
+      containers:
+        # 도커허브에 올린 이미지 pull
+        - name: cicd-devops-project
+          image: acoursove2/cicd-project-ansible
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
