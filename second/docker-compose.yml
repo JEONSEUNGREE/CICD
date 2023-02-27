@@ -10,7 +10,7 @@ services:
       cicd:
 
   docker-server:
-    image: acoursove2/ubuntu:3.0
+    image: acoursove2/ubuntu:4.0
     container_name: docker-server
     privileged: true
     # 공개 포트 지정
@@ -23,9 +23,9 @@ services:
     networks:
       cicd:
 
-  anisible-server:
-    image: acoursove2/ansible:1.0
-    container_name: anisible-server
+  ansible-server:
+    image: acoursove2/ansible:2.0
+    container_name: ansible-server
     privileged: true
     ports:
       - "20022:22"

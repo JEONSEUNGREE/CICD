@@ -92,3 +92,70 @@ KUBERNETES 1.컨테이너화 된 애플리케이션 구동 2.서비스 디스커
 마스터에 (환경등을 설정 하고 개발자가 코드수정) -> 하위 노드들에 마스터가 수정된 정보 전달 (이때 노드 안에서 관리하는 최소 단위를 pod이라고함) pods 간에 로드밸런싱을 함
 
 pods은 애플리케이션을 위해 상호작용하는 컨테이너의 논리적 조합이다. 이러한 노드들을 클러스터로 구성하여 서버를 안전하게 구성할수있다.
+
+도커 데스크탑
+systemctl --user start docker-desktop
+
+서비스 확인
+kubectl get services
+
+쿠버네티스는 컨테이너엔진이 작동인중인 경우 사용이가능함
+쿠버네티스의 작동중인 최소한의 단위가 pod이므로 우리가 실행하고자하는 어플이 컨테이너로 패키징되어 사용할 수 있는 상태가 되어야한다.
+아래 의미는 image nginx를 가져와서 sample-nginx라는 pods를 생성하겠다는 의미이다.
+kubectl run sample-nginx --image=nginx --port=80
+-> pod/sample-nginx created
+
+생성된 pods들을 확인할때는 kubectl get pods
+
+상세 설정을 확인할때는 kubectl describe pod/sample-nginx
+
+컨테이너 포트와 events 항목에 상태, 로그 확인 가능
+
+deployment pods를 여러개로 스케일업, 히스토리, 스케줄링할때 사용
+kubectl create deployment sample-nginx --image=nginx
+목록 확인
+kubectl get deployments
+
+다시한번 pods을 확인해보면
+kubectl get pods
+랜덤아이디가 부여된 pods 확인가능
+
+pods 삭제 명령어
+kubectl delete pods sample-nginx
+
+삭제 명령어
+kubectl delete {pods이름}
+deployment된 pods를 삭제시 최소한의 pods를 유지하려하기때문에 삭제해도 새로 생성됨
+
+pods replica 생성 (scale up )
+kubectl scale deployment sample-nginx --replicas=2
+
+deployment 삭제
+kubectl delete deployments.apps/sample-nginx
+
+yml 설정후 kubectl apply -f sample1.yml 실행
+
+pods 노드 확인
+kubectl get pods -o wide
+
+쿠버네티스도 도커와 마찬가지로 터널링 exec로 가능
+kubectl exec -it {podsId} -- bin/bash
+
+apt-get update && apt-get install -y curl wget 이후
+내부 hostname -i로 내부 아이피확인
+
+다음 명령어로 nginx 정상 작동 여부 확인
+curl -X GET http://{hostname}
+
+서비스확인
+kubectl get services
+
+도커와 마찬가지로 호스트 PC에서 접속 가능하도록 포트와 type 노드 포트를 설정(각각의 노드에 포워딩 설정)
+kubectl expose deployment nginx-deployment --port=80 --type=NodePort
+
+최종
+젠킨스 파일 패키징 -> Ansible 파일 이미지화 push && pull && hosts 전달 -> 쿠버네티스 pods 생성
+
+1. ssh-copy-id [계정명]@hostIP 인증키 설정
+2. ansible -i ./k8s/hosts kubernates -m ping -u [계정명] 테스트
+3. yml에서 kubectl 위치를 못찾는경우 절대경로 설정 /usr/local/bin
