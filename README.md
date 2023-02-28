@@ -159,3 +159,6 @@ kubectl expose deployment nginx-deployment --port=80 --type=NodePort
 1. ssh-copy-id [계정명]@hostIP 인증키 설정
 2. ansible -i ./k8s/hosts kubernates -m ping -u [계정명] 테스트
 3. yml에서 kubectl 위치를 못찾는경우 절대경로 설정 /usr/local/bin
+
+advance jenkins)
+pipeline script로 설정
