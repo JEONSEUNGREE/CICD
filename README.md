@@ -23,23 +23,20 @@ jekins
 4. 다시 2번으로 돌아와서 젠킨스에 SSH Servers 설정
    jenkins 도커 권한 (docker exec -u 0 -it mycontainer bash)
 5. docker in docker로 (우분투에 도커 설치)
-   systemctl start docker 실행시 다음과 같은 에러가 발생하는 경우
-   --
-   System has not been booted with systemd as init system (PID 1). Can't operate.
-   --
-   1.sudo apt-get update && sudo apt-get install -yqq daemonize dbus-user-session fontconfig
+   systemctl start docker 실행시 다음과 같은 에러가 발생하는 경우 (도커는 루트의 권한이 필요하기 때문에 발생하며 큰 보안이슈로 지적을 받고 있음)
+   --> System has not been booted with systemd as init system (PID 1). Can't operate.
+   soultion
+   --> sudo apt-get update && sudo apt-get install -yqq daemonize dbus-user-session fontconfig
+   sudo daemonize /usr/bin/unshare --fork --pid --mount-proc /lib/systemd/systemd --system-unit=basic.target
+   exec sudo nsenter -t $(pidof systemd) -a su - $LOGNAME
+   
+6. snap version 없는경우 sudo apt-get install snapd 인스톨
 
-2.sudo daemonize /usr/bin/unshare --fork --pid --mount-proc /lib/systemd/systemd --system-unit=basic.target
+7. systemctl status 확인
 
-3.exec sudo nsenter -t $(pidof systemd) -a su - $LOGNAME
+8. 젠킨스 Send build artifacts over SSH 설정
 
-4.snap version 없는경우 sudo apt-get install snapd 인스톨
-
-5. systemctl status 확인
-
-6. 젠킨스 Send build artifacts over SSH 설정
-
-7. 8081로 접속
+9. 8081로 접속
 
 주의점)
 현재 상태
